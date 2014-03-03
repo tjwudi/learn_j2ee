@@ -6,24 +6,29 @@
 
 package com.wudi.servlets;
 
+import com.wudi.data.ConnectionPool;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.sql.*;
-import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
  * @author john
  */
-@WebServlet(name = "course", urlPatterns = {"/course"})
-public class course extends HttpServlet {
+@WebServlet(name = "Greeting", urlPatterns = {"/greeting"})
+public class Greeting extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -36,43 +41,28 @@ public class course extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        PrintWriter out = response.getWriter();
         
-        try {
-            // Init Drivers
-            Class.forName("com.sybase.jdbc4.jdbc.SybDriver").newInstance();
-        } catch (Exception ex) {
-            out.println(ex.getMessage());
-        } 
-        out.println("OK1");
+        ConnectionPool connPool = ConnectionPool.getInstance();
+        Connection conn = connPool.getConnection();
         
+        response.sendRedirect("success/connection_good.jsp");
         
-        Properties properties = new Properties();
-          properties.put("user", "sa");
-          properties.put("password", "XX");
-        Connection con = null;
-        try {
-            con = DriverManager.getConnection("jdbc:sybase:Tds:127.0.0.1:5000/testdb",
-                    properties);
-            
-        } catch (SQLException ex) {
-            out.println(ex.getMessage());
-        }
-        out.println("OK2");
-        try {
-            Statement stmt = con.createStatement();
-            stmt.execute("CREATE TABLE testtable "
-                    + "("
-                    + "id INTEGER identity,"
-                    + "PRIMARY KEY(id)"
-                    + ")");  
-            
-        } catch (Exception e) {
-            out.println(e.getMessage());
-        }
+//        Statement stmt = null;
+//        ResultSet teachers = null;
+//        try {
+//            stmt = conn.createStatement();
+//            teachers = stmt.executeQuery("SELECT * FROM teacher");
+//
+//            while (teachers.next()) {
+//                
+//            }
+//        } catch (SQLException ex) {
+//            Logger.getLogger(Greeting.class.getName()).log(Level.SEVERE, null, ex);
+//            response.sendRedirect("error/query_failed.jsp");
+//            return;            
+//        }
+        
 
-        
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
